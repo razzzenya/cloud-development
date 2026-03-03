@@ -48,10 +48,12 @@ if (addressOverrides.Count > 0)
 
 builder.Services
     .AddOcelot(builder.Configuration)
-    .AddCustomLoadBalancer((route, serviceDiscovery) =>
-        new WeightedRoundRobinLoadBalancer(
+    .AddCustomLoadBalancer((serviceProvider, route, serviceDiscovery) =>
+    {
+        return new WeightedRoundRobinLoadBalancer(
             async () => await serviceDiscovery.GetAsync(),
-            hostPortWeights));
+            hostPortWeights);
+    });
 
 builder.Services.AddCors(options =>
 {

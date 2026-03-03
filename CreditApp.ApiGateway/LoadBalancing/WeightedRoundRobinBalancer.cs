@@ -1,31 +1,37 @@
-using Ocelot.LoadBalancer.LoadBalancers;
+using Microsoft.Extensions.Logging;
+using Ocelot.Errors;
+using Ocelot.LoadBalancer.Interfaces;
+using Ocelot.Middleware;
 using Ocelot.Responses;
 using Ocelot.Values;
 
 namespace CreditApp.ApiGateway.LoadBalancing;
+
+public class NoServicesAvailableError(string message) : Error(message, OcelotErrorCode.UnableToCompleteRequestError, 503)
+{
+}
 
 /// <summary>
 /// Weighted Round Robin балансировщик нагрузки для Ocelot.
 /// </summary>
 public class WeightedRoundRobinLoadBalancer(Func<Task<List<Service>>> servicesProvider, Dictionary<string, double> hostPortWeights) : ILoadBalancer
 {
-    private int _currentIndex = 0;
-    private int _remainingRequests = 0;
-    private readonly object _lock = new();
+    private static int _currentIndex = -1;
+    private static int _remainingRequests = 0;
+    private static readonly object _lock = new();
 
-    public async Task<Response<ServiceHostAndPort>> Lease(HttpContext httpContext)
-    {
+    public string Type => "WeightedRoundRobin";
+
+    public async Task<Response<ServiceHostAndPort>> LeaseAsync(HttpContext httpContext)
+    { 
         var services = await servicesProvider();
 
         if (services == null || services.Count == 0)
         {
             return new ErrorResponse<ServiceHostAndPort>(
-                new ServicesAreEmptyError("No services available"));
+                new NoServicesAvailableError("No services available"));
         }
-
         ServiceHostAndPort selectedService;
-        double selectedWeight;
-        int selectedIndex;
 
         lock (_lock)
         {
@@ -40,14 +46,10 @@ public class WeightedRoundRobinLoadBalancer(Func<Task<List<Service>>> servicesPr
                 _remainingRequests = (int)Math.Ceiling(weight);
             }
 
-            _remainingRequests--;
-
             var currentService = services[_currentIndex];
-            var currentHostPort = $"{currentService.HostAndPort.DownstreamHost}:{currentService.HostAndPort.DownstreamPort}";
-
             selectedService = currentService.HostAndPort;
-            selectedWeight = hostPortWeights.TryGetValue(currentHostPort, out var currentWeight) ? currentWeight : 1.0;
-            selectedIndex = _currentIndex;
+            
+            _remainingRequests--;
         }
         return new OkResponse<ServiceHostAndPort>(selectedService);
     }
