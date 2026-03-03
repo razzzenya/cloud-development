@@ -18,10 +18,7 @@
         }
       ],
       "UpstreamPathTemplate": "/api/credit",
-      "UpstreamHttpMethod": [ "Get" ],
-      "LoadBalancerOptions": {
-        "Type": "WeightedRoundRobin"
-      }
+      "UpstreamHttpMethod": [ "Get" ]
     }
   ],
   "GlobalConfiguration": {
