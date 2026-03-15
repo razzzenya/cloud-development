@@ -64,5 +64,5 @@ public class WeightedRoundRobinLoadBalancer(Func<Task<List<Service>>> servicesPr
         return new OkResponse<ServiceHostAndPort>(selectedService);
     }
 
-    public void Release(ServiceHostAndPort hostAndPort) {}
+    public void Release(ServiceHostAndPort hostAndPort) { }
 }

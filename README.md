@@ -11,14 +11,17 @@
 ## Реализованный функционал
 
 ### Основные возможности:
-- **API Gateway** на базе Ocelot с балансировкой нагрузки
-- **Weighted Round Robin** балансировщик с весами 5:3:2
-- **3 реплики API сервиса** через Aspire orchestration
-- **Генерация кредитных заявок** с реалистичными данными (Bogus)
-- **Общий Redis кэш** для всех реплик с TTL 10 минут
-- **Blazor WebAssembly клиент** для работы через Gateway
-- **Структурное логирование** через OpenTelemetry
-- **Мониторинг балансировки** в реальном времени через Aspire Dashboard
+- **API Gateway** на базе Ocelot с алгоритмом балансировки Weighted Round Robin
+- **Балансировка с весами 5:3:2** между тремя репликами API
+- **3 реплики API сервиса** с оркестрацией через .NET Aspire
+- **Генерация кредитных заявок** с реалистичными данными через библиотеку Bogus
+- **Трёхуровневое кэширование**: Redis (быстрый доступ) → MinIO (постоянное хранилище) → Генератор
+- **Асинхронная обработка** через AWS SNS (LocalStack) с публикацией событий
+- **Объектное хранилище MinIO** для персистентного хранения заявок
+- **Blazor WebAssembly клиент** для взаимодействия через Gateway
+- **Структурное логирование** и телеметрия через OpenTelemetry
+- **Мониторинг в реальном времени** через Aspire Dashboard
+- **Интеграционные тесты** для проверки всей системы
 
 ## 🏗️ Архитектура
 
@@ -50,7 +53,16 @@
         ┌─────────────────┐
         │  Redis Cache    │  ← Общий кэш
         │  TTL: 10 минут  │
-        │  + Commander    │
+        └────────┬────────┘
+                 │
+        ┌────────┴────────┐
+        │   AWS SNS       │  ← Очередь сообщений
+        │  (LocalStack)   │
+        └────────┬────────┘
+                 ↓
+        ┌─────────────────┐
+        │  FileService    │  ← Сервис файлов
+        │  + MinIO        │  ← Постоянное хранилище
         └─────────────────┘
                  ↑
         ┌────────┴────────┐
@@ -64,7 +76,8 @@
 ```
 cloud-development/
 ├── CreditApp.AppHost/                    # 🎯 Aspire orchestrator
-│   └── Program.cs                        # Конфигурация: 3 реплики API + Gateway
+│   ├── Program.cs                        # Конфигурация: 3 реплики + Gateway + FileService
+│   └── localstack-init.sh                # Инициализация SNS топиков
 │
 ├── CreditApp.ApiGateway/                 # 🌐 API Gateway (Лаб. №2)
 │   ├── LoadBalancing/
@@ -77,9 +90,19 @@ cloud-development/
 │   ├── Controllers/
 │   │   └── CreditController.cs           # GET /api/credit?id={id}
 │   ├── Services/
-│   │   └── CreditGeneratorService/
-│   │       └── CreditApplicationGeneratorService.cs  # Генерация + кэш
-│   └── Program.cs                        # Конфигурация (Redis, CORS, Swagger)
+│   │   ├── CreditGeneratorService/
+│   │   │   └── CreditApplicationGeneratorService.cs  # Генерация + кэш + MinIO
+│   │   └── SnsPublisherService/
+│   │       └── SnsPublisherService.cs    # Публикация в SNS
+│   └── Program.cs                        # Redis, SNS, CORS, Swagger
+│
+├── CreditApp.FileService/                # 📁 Сервис файлов
+│   ├── Controllers/
+│   │   ├── FilesController.cs            # Работа с файлами
+│   │   └── NotificationController.cs     # SNS webhook
+│   ├── Services/
+│   │   └── MinioStorageService.cs        # Работа с MinIO
+│   └── Program.cs                        # MinIO клиент
 │
 ├── CreditApp.ServiceDefaults/            # ⚙️ Общие настройки
 │   └── Extensions.cs                     # OpenTelemetry, health checks
@@ -87,6 +110,9 @@ cloud-development/
 ├── CreditApp.Domain/                     # 📦 Модели данных
 │   └── Entities/
 │       └── CreditApplication.cs          # Модель кредитной заявки
+│
+├── CreditApp.Test/                       # 🧪 Интеграционные тесты
+│   └── IntegrationTest.cs                # End-to-End тесты всей системы
 │
 ├── Client.Wasm/                          # 💻 Blazor WASM клиент
 │   ├── Components/

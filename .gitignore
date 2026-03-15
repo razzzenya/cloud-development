@@ -416,3 +416,12 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Docker volumes and data
+minio-data/
+localstack-data/
+redis-data/
+
+# Aspire generated files
+*.dcproj.user
+.aspire/

@@ -8,11 +8,13 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.S3" Version="4.0.19" />
+    <PackageReference Include="Minio" Version="7.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\CreditApp.ServiceDefaults\CreditApp.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\CreditApp.Domain\CreditApp.Domain.csproj" />
   </ItemGroup>
 
 </Project>

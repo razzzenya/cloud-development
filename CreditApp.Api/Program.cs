@@ -1,4 +1,6 @@
+using Amazon.SimpleNotificationService;
 using CreditApp.Api.Services.CreditGeneratorService;
+using CreditApp.Api.Services.SnsPublisherService;
 using CreditApp.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +8,20 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 
 builder.AddRedisDistributedCache("cache");
+
+var awsOptions = new Amazon.Extensions.NETCore.Setup.AWSOptions
+{
+    DefaultClientConfig =
+    {
+        ServiceURL = builder.Configuration["AWS:ServiceURL"]
+    }
+};
+
+builder.Services.AddDefaultAWSOptions(awsOptions);
+builder.Services.AddAWSService<IAmazonSimpleNotificationService>();
+
+builder.Services.AddScoped<SnsPublisherService>();
+
 
 builder.Services.AddCors(options =>
 {
