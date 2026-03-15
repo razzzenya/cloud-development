@@ -27,4 +27,6 @@ builder.AddProject<Projects.Client_Wasm>("client")
     .WithReference(gateway)
     .WaitFor(gateway);
 
+builder.AddProject<Projects.CreditApp_FileService>("creditapp-fileservice");
+
 builder.Build().Run();

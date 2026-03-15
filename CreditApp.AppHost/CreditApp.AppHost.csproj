@@ -20,6 +20,7 @@
     <ProjectReference Include="..\Client.Wasm\Client.Wasm.csproj" />
     <ProjectReference Include="..\CreditApp.ApiGateway\CreditApp.ApiGateway.csproj" />
     <ProjectReference Include="..\CreditApp.Api\CreditApp.Api.csproj" />
+    <ProjectReference Include="..\CreditApp.FileService\CreditApp.FileService.csproj" />
   </ItemGroup>
 
 </Project>

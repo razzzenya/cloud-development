@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.3.11520.95 d18.3
+VisualStudioVersion = 18.3.11520.95
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Wasm", "Client.Wasm\Client.Wasm.csproj", "{AE7EEA74-2FE0-136F-D797-854FD87E022A}"
 EndProject
@@ -13,6 +13,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreditApp.AppHost", "CreditApp.AppHost\CreditApp.AppHost.csproj", "{2A5FB573-9376-4FEB-9289-A8387F435C13}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreditApp.ApiGateway", "CreditApp.ApiGateway\CreditApp.ApiGateway.csproj", "{7F3E754C-DA95-9AEF-13A7-05AEE66771F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreditApp.FileService", "CreditApp.FileService\CreditApp.FileService.csproj", "{9FB93C0A-039C-9B30-1599-38D087B50EBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CreditApp.Test", "CreditApp.Test\CreditApp.Test.csproj", "{37E47E85-F350-483F-9904-08F0D62D553D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +48,14 @@ Global
 		{7F3E754C-DA95-9AEF-13A7-05AEE66771F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F3E754C-DA95-9AEF-13A7-05AEE66771F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F3E754C-DA95-9AEF-13A7-05AEE66771F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FB93C0A-039C-9B30-1599-38D087B50EBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FB93C0A-039C-9B30-1599-38D087B50EBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FB93C0A-039C-9B30-1599-38D087B50EBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FB93C0A-039C-9B30-1599-38D087B50EBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37E47E85-F350-483F-9904-08F0D62D553D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37E47E85-F350-483F-9904-08F0D62D553D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37E47E85-F350-483F-9904-08F0D62D553D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37E47E85-F350-483F-9904-08F0D62D553D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
