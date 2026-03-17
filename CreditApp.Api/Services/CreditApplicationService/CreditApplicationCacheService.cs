@@ -63,7 +63,7 @@ public class CreditApplicationCacheService(
     public async Task SetNewAsync(CreditApplication application, CancellationToken cancellationToken = default)
     {
         await SetInternalAsync(application, cancellationToken);
-        
+
         await snsPublisher.PublishCreditApplicationAsync(application, cancellationToken);
         logger.LogInformation("Новая заявка {Id} опубликована в SNS", application.Id);
     }

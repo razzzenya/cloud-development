@@ -37,7 +37,14 @@ public class AppHostFixture : IAsyncLifetime
     {
         if (App != null)
         {
-            await App.DisposeAsync();
+            try
+            {
+                using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+                await App.DisposeAsync().AsTask().WaitAsync(cts.Token);
+            }
+            catch (OperationCanceledException)
+            {
+            }
         }
     }
 }

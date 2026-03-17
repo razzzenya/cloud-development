@@ -67,7 +67,7 @@ public class MinioStorageService(IMinioClient minioClient, MinioSettings setting
         try
         {
             await EnsureBucketExistsAsync(cancellationToken);
-            
+
             var files = new List<string>();
             var listArgs = new ListObjectsArgs()
                 .WithBucket(settings.BucketName)
