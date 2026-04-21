@@ -12,6 +12,7 @@
     <PackageReference Include="Aspire.StackExchange.Redis.DistributedCaching" Version="9.5.2" />
     <PackageReference Include="AWSSDK.Extensions.NETCore.Setup" Version="4.0.3.25" />
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="4.0.2.19" />
+    <PackageReference Include="AWSSDK.SQS" Version="4.0.2.25" />
     <PackageReference Include="Bogus" Version="35.6.5" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.24" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.4" />

@@ -1,4 +1,4 @@
-using Amazon.SimpleNotificationService;
+using Amazon.SQS;
 using CreditApp.Api.Services.CreditApplicationService;
 using CreditApp.Api.Services.SnsPublisher;
 using CreditApp.ServiceDefaults;
@@ -18,9 +18,9 @@ var awsOptions = new Amazon.Extensions.NETCore.Setup.AWSOptions
 };
 
 builder.Services.AddDefaultAWSOptions(awsOptions);
-builder.Services.AddAWSService<IAmazonSimpleNotificationService>();
+builder.Services.AddAWSService<IAmazonSQS>();
 
-builder.Services.AddScoped<SnsPublisherService>();
+builder.Services.AddScoped<SqsPublisherService>();
 
 builder.Services.AddCors(options =>
 {

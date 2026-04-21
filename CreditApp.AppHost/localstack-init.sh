@@ -2,11 +2,10 @@
 
 echo "Initializing LocalStack"
 
-# Ожидание готовности LocalStack с проверкой
 max_attempts=30
 attempt=0
 while [ $attempt -lt $max_attempts ]; do
-    if awslocal sns list-topics > /dev/null 2>&1; then
+    if awslocal sqs list-queues > /dev/null 2>&1; then
         echo "LocalStack is ready!"
         break
     fi
@@ -20,13 +19,6 @@ if [ $attempt -eq $max_attempts ]; then
     exit 1
 fi
 
-# Создание SNS топика
-awslocal sns create-topic --name credit-applications
-
-# Подписка HTTP эндпоинта FileService на SNS топик
-awslocal sns subscribe \
-    --topic-arn arn:aws:sns:us-east-1:000000000000:credit-applications \
-    --protocol http \
-    --notification-endpoint http://host.docker.internal:5100/api/notification
+awslocal sqs create-queue --queue-name credit-applications
 
 echo "LocalStack initialization completed successfully"

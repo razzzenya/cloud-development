@@ -11,7 +11,7 @@ namespace CreditApp.Api.Services.CreditApplicationService;
 public class CreditApplicationCacheService(
     IDistributedCache cache,
     IConfiguration configuration,
-    SnsPublisherService snsPublisher,
+    SqsPublisherService snsPublisher,
     ILogger<CreditApplicationCacheService> logger)
 {
     private readonly int _expirationMinutes = configuration.GetValue("CacheSettings:ExpirationMinutes", 10);

@@ -1,3 +1,4 @@
+using Amazon.SQS;
 using CreditApp.FileService.Configuration;
 using CreditApp.FileService.Services;
 using CreditApp.ServiceDefaults;
@@ -50,6 +51,17 @@ builder.Services.AddSingleton(sp =>
 builder.Services.AddScoped<MinioStorageService>();
 
 builder.Services.AddSingleton(new JsonSerializerOptions { WriteIndented = true });
+
+var awsOptions = new Amazon.Extensions.NETCore.Setup.AWSOptions
+{
+    DefaultClientConfig =
+    {
+        ServiceURL = builder.Configuration["AWS:ServiceURL"]
+    }
+};
+builder.Services.AddDefaultAWSOptions(awsOptions);
+builder.Services.AddAWSService<IAmazonSQS>();
+builder.Services.AddHostedService<SqsPollingService>();
 
 builder.Services.AddHttpClient();
 builder.Services.AddControllers();

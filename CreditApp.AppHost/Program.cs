@@ -15,7 +15,7 @@ var minio = builder.AddContainer("minio", "minio/minio")
     .WithBindMount("minio-data", "/data");
 
 var localstack = builder.AddContainer("localstack", "localstack/localstack")
-    .WithEnvironment("SERVICES", "sns")
+    .WithEnvironment("SERVICES", "sqs")
     .WithEnvironment("DEBUG", "1")
     .WithEnvironment("AWS_ACCESS_KEY_ID", "test")
     .WithEnvironment("AWS_SECRET_ACCESS_KEY", "test")
@@ -30,12 +30,16 @@ var fileService = builder.AddProject<Projects.CreditApp_FileService>("creditapp-
     {
         var minioEndpoint = minio.GetEndpoint("api");
         ctx.EnvironmentVariables["MinIO__Endpoint"] = $"{minioEndpoint.Host}:{minioEndpoint.Port}";
+        var localstackEndpoint = localstack.GetEndpoint("gateway");
+        ctx.EnvironmentVariables["AWS__ServiceURL"] = $"http://{localstackEndpoint.Host}:{localstackEndpoint.Port}";
+        ctx.EnvironmentVariables["AWS__SQS__QueueUrl"] = $"http://{localstackEndpoint.Host}:{localstackEndpoint.Port}/000000000000/credit-applications";
     })
     .WithEnvironment("MinIO__AccessKey", minioAccessKey)
     .WithEnvironment("MinIO__SecretKey", minioSecretKey)
     .WithEndpoint("http", endpoint => endpoint.Port = 5100)
     .WithEndpoint("https", endpoint => endpoint.Port = 7143)
-    .WaitFor(minio);
+    .WaitFor(minio)
+    .WaitFor(localstack);
 
 var api0 = builder.AddProject<Projects.CreditApp_Api>("creditapp-api-0")
     .WithReference(redis)
@@ -44,6 +48,7 @@ var api0 = builder.AddProject<Projects.CreditApp_Api>("creditapp-api-0")
     {
         var localstackEndpoint = localstack.GetEndpoint("gateway");
         ctx.EnvironmentVariables["AWS__ServiceURL"] = $"http://{localstackEndpoint.Host}:{localstackEndpoint.Port}";
+        ctx.EnvironmentVariables["AWS__SQS__QueueUrl"] = $"http://{localstackEndpoint.Host}:{localstackEndpoint.Port}/000000000000/credit-applications";
     })
     .WithEndpoint("http", endpoint => endpoint.Port = 5179)
     .WithEndpoint("https", endpoint => endpoint.Port = 7170)
@@ -57,6 +62,7 @@ var api1 = builder.AddProject<Projects.CreditApp_Api>("creditapp-api-1")
     {
         var localstackEndpoint = localstack.GetEndpoint("gateway");
         ctx.EnvironmentVariables["AWS__ServiceURL"] = $"http://{localstackEndpoint.Host}:{localstackEndpoint.Port}";
+        ctx.EnvironmentVariables["AWS__SQS__QueueUrl"] = $"http://{localstackEndpoint.Host}:{localstackEndpoint.Port}/000000000000/credit-applications";
     })
     .WithEndpoint("http", endpoint => endpoint.Port = 5180)
     .WithEndpoint("https", endpoint => endpoint.Port = 7171)
@@ -70,6 +76,7 @@ var api2 = builder.AddProject<Projects.CreditApp_Api>("creditapp-api-2")
     {
         var localstackEndpoint = localstack.GetEndpoint("gateway");
         ctx.EnvironmentVariables["AWS__ServiceURL"] = $"http://{localstackEndpoint.Host}:{localstackEndpoint.Port}";
+        ctx.EnvironmentVariables["AWS__SQS__QueueUrl"] = $"http://{localstackEndpoint.Host}:{localstackEndpoint.Port}/000000000000/credit-applications";
     })
     .WithEndpoint("http", endpoint => endpoint.Port = 5181)
     .WithEndpoint("https", endpoint => endpoint.Port = 7172)
